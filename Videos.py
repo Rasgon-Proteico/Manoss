@@ -1,3 +1,6 @@
+import os
+os.environ['QT_QPA_PLATFORM'] = 'xcb'
+
 import sounds
 import cv2
 import mediapipe as mp
@@ -29,12 +32,20 @@ manos = mp_manos.Hands(
 
 finger_state = [False] * 6
 
-# --- Captura de video desde la cámara de tu lap ---
-cap = cv2.VideoCapture(0)
+MAX_INDICES_A_PROBAR = 10
+cap = None
+
+for i in range(MAX_INDICES_A_PROBAR):
+    cap = cv2.VideoCapture(i)
+    if cap.isOpened():
+        print(f"Cámara encontrada en el índice {i}.")
+        break
+    cap.release()
 
 if not cap.isOpened():
     print("Error: No se pudo abrir la cámara.")
     exit()
+
 print()
 print("Presiona 'ESC' para salir.")
 print()
